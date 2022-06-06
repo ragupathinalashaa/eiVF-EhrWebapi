@@ -1,4 +1,4 @@
-﻿namespace EhrWebApi.Utility
+﻿namespace eIVF.Utility
 {
     public class ApiResponse
     {

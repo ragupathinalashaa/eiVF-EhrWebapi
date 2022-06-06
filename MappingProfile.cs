@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace EhrWebApi
+namespace eIVF
 {
     public class MappingProfile : Profile
     {

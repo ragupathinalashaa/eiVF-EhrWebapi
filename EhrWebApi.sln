@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EhrWebApi", "EhrWebApi.csproj", "{04B70B82-3C56-4B38-9243-0C1EE342CCBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eIVF", "eIVF.csproj", "{04B70B82-3C56-4B38-9243-0C1EE342CCBA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTO", "..\DTO\DTO.csproj", "{510E16D6-073E-4829-BA19-09C4FAA1AE74}"
 EndProject
