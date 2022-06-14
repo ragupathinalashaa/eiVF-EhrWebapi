@@ -1,5 +1,6 @@
 ﻿using DTO.FHIR;
 using eIVF.Utility;
+using Hl7.Fhir.Model;
 using Microsoft.AspNetCore.Mvc;
 using Services.Manager;
 
@@ -10,39 +11,76 @@ namespace eIVF.Controllers
     public class EhrController : Controller
     {
 
-        private readonly IPatientService patientService;
-        public EhrController(IPatientService _patientService)
+        private readonly IDataSyncService dataSyncService;
+        public EhrController(IDataSyncService _dataSyncService)
         {
-            patientService = _patientService;
+            dataSyncService = _dataSyncService;
         }
 
 
         [HttpGet("GetAll")]
-        public async Task<ApiResponse> GetAllPatients()
+        public async Task<ApiResponse<List<Patient>>> GetAllPatients(string id)
         {
-            string message = "Data Found";
-            IEnumerable<PatientsDTO> patients = await patientService.GetAllPatientsAsync();
-            if (patients == null)
-            {
-                message = "No data found";
-            }
 
-            return new ApiResponse((int)StatusCodes.Status200OK, message, patients);
+            if (id != null && id != "")
+            {
+                string message = "Data Found";
+
+                List<Patient> patientsList = new List<Patient>();
+                IEnumerable<DataSyncDTO> dataSyncDTOs = await dataSyncService.GetAllDataAsync(id);
+                if (dataSyncDTOs == null)
+                {
+                    return new ApiResponse<List<Patient>>((int)StatusCodes.Status500InternalServerError, message, null);
+                }
+                else
+                {
+                    if (dataSyncDTOs != null)
+                    {
+
+                        foreach (DataSyncDTO dataSyncDTO in dataSyncDTOs.Where(cond => cond.Id != null))
+                        {
+                            if (dataSyncDTO.Id != "")
+                            {
+                                ApiResponse<Patient> aspResponse = await FhirDataAccess.GetPatinetById(dataSyncDTO.Id);
+                                if (aspResponse.StatusCode == StatusCodes.Status200OK)
+                                {
+                                    if (aspResponse.Data != null)
+                                    {
+                                        patientsList.Add(aspResponse.Data);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return new ApiResponse<List<Patient>>((int)StatusCodes.Status200OK, patientsList);
+            }
+            else
+            {
+                return new ApiResponse<List<Patient>>((int)StatusCodes.Status400BadRequest, "Tenant id not found", null);
+            }
         }
 
 
-        // GET api/<PatientsController>/5
-        [HttpGet("GetById/{id}")]
-        public async Task<ApiResponse> GetPatientById(long id)
+        [HttpGet("GetUpdateSummaryById/{id}")]
+        public async Task<ApiResponse<IEnumerable<UpdateSummaryDTO>>> GetUpdateSummary(string id)
         {
-            var patientDTO = await patientService.GetPatientByIdAsync(id);
-
-            if (patientDTO == null)
+            if (id != "")
             {
-                return new ApiResponse((int)StatusCodes.Status404NotFound);
+                IEnumerable<UpdateSummaryDTO> updateSummaryDTO = await dataSyncService.GetUpdateSummaryByIdAsync(id);
+                if (updateSummaryDTO == null)
+                {
+                    return new ApiResponse<IEnumerable<UpdateSummaryDTO>>((int)StatusCodes.Status404NotFound, "No such detail found transient database", null);
+                }
+                else
+                {
+                    return new ApiResponse<IEnumerable<UpdateSummaryDTO>>((int)StatusCodes.Status200OK, "Data Found", updateSummaryDTO);
+                }
             }
-
-            return new ApiResponse((int)StatusCodes.Status200OK, "DataFound", patientDTO);
+            else
+            {
+                return new ApiResponse<IEnumerable<UpdateSummaryDTO>>((int)StatusCodes.Status400BadRequest, "Tenant Id not found", null);
+            }
         }
     }
 }

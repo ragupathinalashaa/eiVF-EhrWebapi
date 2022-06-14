@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = builder.Configuration.GetConnectionString("EhrDataConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<EhrDataContext>(options =>
     options.UseSqlServer(connectionString)
 );
@@ -25,19 +25,19 @@ var mapperConfig = new MapperConfiguration(mc => {
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
+builder.Services.AddScoped<IUpdataDataSyncRespository, UpdateDataSyncRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-builder.Services.AddScoped<IPatientAddressRepository, PatientAddressRepository>();
-builder.Services.AddTransient<IPatientService, PatientService>();
+builder.Services.AddTransient<IDataSyncService, DataSyncService>();
 var app = builder.Build();
 
 
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
 

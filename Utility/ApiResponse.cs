@@ -1,8 +1,12 @@
 ﻿namespace eIVF.Utility
 {
-    public class ApiResponse
+
+    public class ApiResponse<TEntity>
     {
-        public ApiResponse(int statuscode, string messagePharse, dynamic data)
+        public ApiResponse()
+        {
+        }
+        public ApiResponse(int statuscode, string messagePharse, TEntity data)
         {
             StatusCode = statuscode;
             Message = messagePharse;
@@ -12,14 +16,14 @@
         {
             StatusCode = statuscode;
         }
-        public ApiResponse(int statuscode, dynamic data)
+        public ApiResponse(int statuscode, TEntity data)
         {
             StatusCode = statuscode;
             Data = data;
         }
         public int StatusCode { get; set; }
         public string? Message { get; set; }
-        public dynamic? Data { get; set; }
+        public TEntity Data { get; set; }
 
     }
 }
