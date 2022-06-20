@@ -26,7 +26,6 @@ IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 builder.Services.AddScoped<IUpdataDataSyncRespository, UpdateDataSyncRepository>();
-builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddTransient<IDataSyncService, DataSyncService>();
 var app = builder.Build();
 

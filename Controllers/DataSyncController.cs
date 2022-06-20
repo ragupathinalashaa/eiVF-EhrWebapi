@@ -10,6 +10,7 @@ using System.Text.Json;
 
 namespace eIVF.Controllers
 {
+  
     [Route("api/[controller]")]
     [ApiController]
     public class DataSyncController : ControllerBase
@@ -19,8 +20,7 @@ namespace eIVF.Controllers
         {
             datasyncService = _datasyncService;
         }
-     
-      
+
         [HttpPost("Update")]
         public async Task<ApiResponse<string>> UpdateDataSync(string id)
         {

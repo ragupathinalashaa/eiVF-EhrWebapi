@@ -62,7 +62,7 @@ namespace eIVF.Controllers
         }
 
 
-        [HttpGet("GetUpdateSummaryById/{id}")]
+        [HttpGet("GetUpdateSummaryById")]
         public async Task<ApiResponse<IEnumerable<UpdateSummaryDTO>>> GetUpdateSummary(string id)
         {
             if (id != "")
@@ -80,6 +80,27 @@ namespace eIVF.Controllers
             else
             {
                 return new ApiResponse<IEnumerable<UpdateSummaryDTO>>((int)StatusCodes.Status400BadRequest, "Tenant Id not found", null);
+            }
+        }
+
+        [HttpPost("UpdateSyncStatus")]
+        public async Task<ApiResponse<string>> UpdateStatus(string id)
+        {
+            if (id != "")
+            {
+                int status = await dataSyncService.UpdateSyncStatus(id);
+                if (status > 0)
+                {
+                    return new ApiResponse<string>((int)StatusCodes.Status200OK, "Successfully Update");
+                }
+                else
+                {
+                    return new ApiResponse<string>((int)StatusCodes.Status404NotFound, "Unable to update");
+                }
+            }
+            else
+            {
+                return new ApiResponse<string>((int)StatusCodes.Status400BadRequest, "Id not found");
             }
         }
     }
