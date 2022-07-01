@@ -7,6 +7,7 @@ using System.Text;
 using eIVF.Utility;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
+using Services.Manager;
 
 namespace eIVF.Utility
 {

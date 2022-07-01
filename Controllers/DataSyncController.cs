@@ -20,19 +20,23 @@ namespace eIVF.Controllers
         {
             datasyncService = _datasyncService;
         }
-
+        /// <summary>
+        /// Update the changes happen in eIVF UI into transeint DB 
+        /// </summary>
+        /// <param name="fhirId"></param>
+        /// <returns>Update status will be shown</returns>
         [HttpPost("Update")]
-        public async Task<ApiResponse<string>> UpdateDataSync(string id)
+        public async Task<ApiResponse<string>> UpdateDataSync(string fhirId)
         {
             ApiResponse<string> apiResponse = null;
 
-            if (string.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrWhiteSpace(fhirId))
             {
-                apiResponse = new ApiResponse<string>((int)StatusCodes.Status400BadRequest, "Id not found to update");
+                apiResponse = new ApiResponse<string>((int)StatusCodes.Status400BadRequest, "fhirId not found to update");
                 return apiResponse;
             }
             int iReturn = 0;
-            DataSyncDTO dataSyncDTO = await datasyncService.GetDataAsyncById(id);
+            DataSyncDTO dataSyncDTO = await datasyncService.GetDataAsyncById(fhirId);
             if (dataSyncDTO != null)
             {
                 if (dataSyncDTO.IsSynced)
@@ -40,7 +44,7 @@ namespace eIVF.Controllers
                     dataSyncDTO = new DataSyncDTO();
                     dataSyncDTO.TenantId = "TN00001";
                     dataSyncDTO.ResourceType = "Patient";
-                    dataSyncDTO.Id = id;
+                    dataSyncDTO.Id = fhirId;
                     dataSyncDTO.CreatedOn = DateTime.UtcNow;
                     dataSyncDTO.UpdatedOn = null;
                     dataSyncDTO.IsSynced = false;
@@ -50,7 +54,7 @@ namespace eIVF.Controllers
                 {
                     dataSyncDTO.TenantId = "TN00001";
                     dataSyncDTO.ResourceType = "Patient";
-                    dataSyncDTO.Id = id;
+                    dataSyncDTO.Id = fhirId;
                     dataSyncDTO.UpdatedOn = DateTime.UtcNow;
                     dataSyncDTO.IsSynced = false;
                     DataSyncDTO dataSyncDTOReturn = await datasyncService.UpdateDataSyncAsync(dataSyncDTO);
@@ -65,7 +69,7 @@ namespace eIVF.Controllers
                 dataSyncDTO = new DataSyncDTO();
                 dataSyncDTO.TenantId = "TN00001";
                 dataSyncDTO.ResourceType = "Patient";
-                dataSyncDTO.Id = id;
+                dataSyncDTO.Id = fhirId;
                 dataSyncDTO.CreatedOn = DateTime.UtcNow;
                 dataSyncDTO.UpdatedOn = null;
                 dataSyncDTO.IsSynced = false;
